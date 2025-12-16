@@ -29,7 +29,7 @@
             transition: background 0.4s ease;
         }
 
-        /* Background overlay for hover images */
+        /* Background overlay for rotating images */
         .bg-overlay {
             position: fixed;
             top: 0;
@@ -39,13 +39,13 @@
             background-size: cover;
             background-position: center;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: opacity 1s ease;
             z-index: 0;
             pointer-events: none;
         }
 
         .bg-overlay.active {
-            opacity: 0.3;
+            opacity: 0.35;
         }
 
         /* Snow Globe Container */
@@ -373,6 +373,12 @@
     </div>
 
     <script>
+        // Cookie images for rotation
+        const cookieImages = ['cookie1.jpg', 'cookie2.jpg', 'cookie3.jpg', 'cookie4.jpg', 'cookie5.jpg'];
+        let currentImageIndex = 0;
+        let isHovering = false;
+        let rotationInterval;
+
         // Create snowflakes
         function createSnowflakes() {
             const snowGlobe = document.getElementById('snowGlobe');
@@ -401,20 +407,49 @@
             }
         }
 
-        // Background change on hover
+        // Background rotation through all cookies
+        function startBackgroundRotation() {
+            const bgOverlay = document.getElementById('bgOverlay');
+            
+            // Set initial image and show it
+            bgOverlay.style.backgroundImage = `url('${cookieImages[currentImageIndex]}')`;
+            bgOverlay.classList.add('active');
+            
+            rotationInterval = setInterval(() => {
+                if (!isHovering) {
+                    // Fade out
+                    bgOverlay.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        // Change image
+                        currentImageIndex = (currentImageIndex + 1) % cookieImages.length;
+                        bgOverlay.style.backgroundImage = `url('${cookieImages[currentImageIndex]}')`;
+                        
+                        // Fade back in
+                        bgOverlay.style.opacity = '';
+                    }, 500);
+                }
+            }, 5000); // Rotate every 5 seconds
+        }
+
+        // Background change on hover (temporarily overrides rotation)
         function setupBackgroundHover() {
             const bgOverlay = document.getElementById('bgOverlay');
             const links = document.querySelectorAll('.cookie-link');
 
             links.forEach(link => {
                 link.addEventListener('mouseenter', () => {
+                    isHovering = true;
                     const bgImage = link.getAttribute('data-bg');
                     bgOverlay.style.backgroundImage = `url('${bgImage}')`;
-                    bgOverlay.classList.add('active');
+                    bgOverlay.style.opacity = '0.5'; // Slightly brighter on hover
                 });
 
                 link.addEventListener('mouseleave', () => {
-                    bgOverlay.classList.remove('active');
+                    isHovering = false;
+                    // Return to current rotation image
+                    bgOverlay.style.backgroundImage = `url('${cookieImages[currentImageIndex]}')`;
+                    bgOverlay.style.opacity = '';
                 });
             });
         }
@@ -422,6 +457,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             createSnowflakes();
+            startBackgroundRotation();
             setupBackgroundHover();
         });
     </script>

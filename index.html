@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fal Cookie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cranberry: #9B2335;
+            --pine: #1D4D4F;
+            --gold: #C9A227;
+            --cream: #F5F0E8;
+            --cocoa: #3D2314;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Crimson Pro', Georgia, serif;
+            background: linear-gradient(135deg, var(--pine) 0%, #0D2626 50%, var(--cocoa) 100%);
+            overflow-x: hidden;
+            position: relative;
+            transition: background 0.4s ease;
+        }
+
+        /* Background overlay for hover images */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-overlay.active {
+            opacity: 0.3;
+        }
+
+        /* Snow Globe Container */
+        .snow-globe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Snowflakes */
+        .snowflake {
+            position: absolute;
+            top: -20px;
+            color: white;
+            font-size: 1em;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            animation: fall linear infinite;
+            opacity: 0.9;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sway {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(15px);
+            }
+            75% {
+                transform: translateX(-15px);
+            }
+        }
+
+        /* Globe glass effect */
+        .globe-glass {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85vmin;
+            height: 85vmin;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                inset 0 0 100px rgba(255, 255, 255, 0.05),
+                0 0 50px rgba(255, 255, 255, 0.1),
+                inset 20px -20px 60px rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .globe-shine {
+            position: absolute;
+            top: 8%;
+            left: 15%;
+            width: 25%;
+            height: 20%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 60%);
+            border-radius: 50%;
+            filter: blur(8px);
+        }
+
+        /* Main Content */
+        .content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(3rem, 12vw, 8rem);
+            font-weight: 900;
+            color: var(--cream);
+            text-shadow: 
+                3px 3px 0 var(--cranberry),
+                6px 6px 0 rgba(155, 35, 53, 0.5),
+                0 0 60px rgba(201, 162, 39, 0.4);
+            letter-spacing: 0.05em;
+            margin-bottom: 20px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                text-shadow: 
+                    3px 3px 0 var(--cranberry),
+                    6px 6px 0 rgba(155, 35, 53, 0.5),
+                    0 0 60px rgba(201, 162, 39, 0.4);
+            }
+            50% {
+                text-shadow: 
+                    3px 3px 0 var(--cranberry),
+                    6px 6px 0 rgba(155, 35, 53, 0.5),
+                    0 0 100px rgba(201, 162, 39, 0.7),
+                    0 0 150px rgba(201, 162, 39, 0.3);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--gold);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 60px;
+            opacity: 0.9;
+        }
+
+        /* Cookie Links */
+        .cookie-links {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .cookie-link {
+            position: relative;
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--cream);
+            text-decoration: none;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, rgba(155, 35, 53, 0.8), rgba(155, 35, 53, 0.6));
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            letter-spacing: 0.05em;
+        }
+
+        .cookie-link::before {
+            content: '🍪';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .cookie-link::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cookie-link:hover {
+            transform: scale(1.08);
+            background: linear-gradient(135deg, var(--cranberry), #7a1c2a);
+            box-shadow: 
+                0 10px 40px rgba(155, 35, 53, 0.5),
+                0 0 30px rgba(201, 162, 39, 0.3);
+            border-color: var(--cream);
+        }
+
+        .cookie-link:hover::before {
+            transform: translateY(-50%) rotate(360deg) scale(1.2);
+        }
+
+        .cookie-link:hover::after {
+            left: 100%;
+        }
+
+        /* Decorative elements */
+        .ornament {
+            position: fixed;
+            font-size: 3rem;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .ornament:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .ornament:nth-child(2) { top: 20%; right: 8%; animation-delay: 1s; }
+        .ornament:nth-child(3) { bottom: 15%; left: 10%; animation-delay: 2s; }
+        .ornament:nth-child(4) { bottom: 25%; right: 5%; animation-delay: 3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* Footer */
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.9rem;
+            color: rgba(245, 240, 232, 0.5);
+            letter-spacing: 0.1em;
+        }
+
+        /* Globe base */
+        .globe-base {
+            position: fixed;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30vmin;
+            height: 8vmin;
+            background: linear-gradient(to bottom, var(--cocoa), #1a0d08);
+            border-radius: 0 0 50% 50% / 0 0 100% 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 4;
+        }
+
+        .globe-base::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110%;
+            height: 15px;
+            background: linear-gradient(to right, #8B7355, var(--gold), #8B7355);
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .cookie-link {
+                font-size: 1.1rem;
+                padding: 14px 40px;
+            }
+            .subtitle {
+                font-size: 1rem;
+                letter-spacing: 0.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background overlay for hover images -->
+    <div class="bg-overlay" id="bgOverlay"></div>
+
+    <!-- Snow Globe Effect -->
+    <div class="snow-globe" id="snowGlobe"></div>
+    
+    <!-- Globe Glass Effect -->
+    <div class="globe-glass">
+        <div class="globe-shine"></div>
+    </div>
+    
+    <!-- Globe Base -->
+    <div class="globe-base"></div>
+
+    <!-- Decorative Ornaments -->
+    <div class="ornament">🎄</div>
+    <div class="ornament">⭐</div>
+    <div class="ornament">🎁</div>
+    <div class="ornament">❄️</div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1 class="title">Falcookie</h1>
+        <p class="subtitle">Festive Recipes & Inspiration</p>
+        
+        <nav class="cookie-links">
+            <a href="https://archive.is/sP7WW" 
+               class="cookie-link" 
+               data-bg="cookie1.jpg"
+               target="_blank">
+                Chocolate Crinkle
+            </a>
+            <a href="https://www.wellmadebykiley.com/blog/cinnamon-roll-cheesecake-cookies#recipe=" 
+               class="cookie-link" 
+               data-bg="cookie2.jpg"
+               target="_blank">
+                Cinnamon Roll Cheesecake
+            </a>
+            <a href="https://whatmollymade.com/orange-shortbread-cookies/" 
+               class="cookie-link" 
+               data-bg="cookie3.jpg"
+               target="_blank">
+                Orange Shortbread
+            </a>
+            <a href="https://archive.is/n4G0F" 
+               class="cookie-link" 
+               data-bg="cookie4.jpg"
+               target="_blank">
+                Dark and Stormy
+            </a>
+            <a href="https://www.audreys-table.com/whats-on-the-table/black-sesame-swirl-and-vanilla-white-chocolate-cookies" 
+               class="cookie-link" 
+               data-bg="cookie5.jpg"
+               target="_blank">
+               Black Sesame Swirl and Vanilla White Chocolate
+            </a>
+        </nav>
+
+        <p class="footer">✨ Baked with love this holiday season ✨</p>
+    </div>
+
+    <script>
+        // Create snowflakes
+        function createSnowflakes() {
+            const snowGlobe = document.getElementById('snowGlobe');
+            const snowflakeChars = ['❄', '❅', '❆', '✻', '✼', '•'];
+            const numSnowflakes = 80;
+
+            for (let i = 0; i < numSnowflakes; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = snowflakeChars[Math.floor(Math.random() * snowflakeChars.length)];
+                
+                // Random positioning and timing
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.fontSize = (Math.random() * 1.5 + 0.5) + 'em';
+                snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+                snowflake.style.animationDuration = (Math.random() * 8 + 6) + 's';
+                snowflake.style.animationDelay = (Math.random() * 10) + 's';
+                
+                // Add sway animation
+                const swayWrapper = document.createElement('div');
+                swayWrapper.style.animation = `sway ${Math.random() * 4 + 3}s ease-in-out infinite`;
+                swayWrapper.style.animationDelay = (Math.random() * 2) + 's';
+                swayWrapper.appendChild(snowflake);
+                
+                snowGlobe.appendChild(snowflake);
+            }
+        }
+
+        // Background change on hover
+        function setupBackgroundHover() {
+            const bgOverlay = document.getElementById('bgOverlay');
+            const links = document.querySelectorAll('.cookie-link');
+
+            links.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    const bgImage = link.getAttribute('data-bg');
+                    bgOverlay.style.backgroundImage = `url('${bgImage}')`;
+                    bgOverlay.classList.add('active');
+                });
+
+                link.addEventListener('mouseleave', () => {
+                    bgOverlay.classList.remove('active');
+                });
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createSnowflakes();
+            setupBackgroundHover();
+        });
+    </script>
+</body>
+</html>
+
